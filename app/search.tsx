@@ -1,68 +1,104 @@
-import { View, Text, TextInput, Pressable } from "react-native";
-import { useState } from "react";
 import { useRouter } from "expo-router";
-import { useWeatherStore } from "./store/useWeatherStore";
+import { useEffect, useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { searchCities } from "@/api/weather";
+import { useWeatherStore } from "@/store/useWeatherStore";
 
 export default function SearchModal() {
-  const [city, setCity] = useState("");
-  const setCurrentCity = useWeatherStore((state) => state.setCurrentCity);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<string[]>([]);
+
+  const setCurrentCity = useWeatherStore(
+    (state) => state.setCurrentCity
+  );
   const router = useRouter();
 
-  function handleSubmit() {
-    if (!city.trim()) return;
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
 
-    setCurrentCity(city.trim());
+    const timeout = setTimeout(() => {
+      searchCities(query).then(setResults);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  function handleSelect(city: string) {
+    setCurrentCity(city);
     router.back();
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "flex-end",
-        padding: 20,
-        backgroundColor: "rgba(0,0,0,0.2)",
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "white",
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          padding: 20,
-        }}
-      >
-        <Text style={{ fontSize: 18, marginBottom: 8 }}>
-          Search city
-        </Text>
+    <View style={styles.overlay}>
+      <View style={styles.sheet}>
+        <Text style={styles.title}>Search city</Text>
 
         <TextInput
-          value={city}
-          onChangeText={setCity}
+          value={query}
+          onChangeText={setQuery}
           placeholder="Type a city name"
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 12,
-          }}
+          style={styles.input}
         />
 
-        <Pressable
-          onPress={handleSubmit}
-          style={{
-            backgroundColor: "#2563eb",
-            padding: 12,
-            borderRadius: 8,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16 }}>
-            Search
-          </Text>
-        </Pressable>
+        <FlatList
+          data={results}
+          keyExtractor={(item) => item}
+          keyboardShouldPersistTaps="handled"
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => handleSelect(item)}
+              style={styles.item}
+            >
+              <Text style={styles.itemText}>{item}</Text>
+            </Pressable>
+          )}
+        />
       </View>
     </View>
   );
 }
+
+const styles = {
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end" as const,
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  sheet: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 20,
+    maxHeight: "70%",
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 8,
+    fontWeight: "600" as const,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+  item: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  itemText: {
+    fontSize: 16,
+  },
+};
