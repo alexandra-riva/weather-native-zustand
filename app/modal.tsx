@@ -1,29 +1,62 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { useWeatherStore } from "@/store/useWeatherStore";
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+export default function FavoritesModal() {
+  const router = useRouter();
+  const { favorites, setCurrentCity } = useWeatherStore();
 
-export default function ModalScreen() {
+  function selectCity(city: string) {
+    setCurrentCity(city);
+    router.back();
+  }
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
-      </Link>
-    </ThemedView>
+    <View style={styles.overlay}>
+      <View style={styles.sheet}>
+        <Text style={styles.title}>Favorite cities</Text>
+
+        {favorites.length === 0 && (
+          <Text style={{ opacity: 0.6 }}>No favorites yet</Text>
+        )}
+
+        {favorites.map((city) => (
+          <Pressable key={city} onPress={() => selectCity(city)}>
+            <Text style={styles.city}>{city}</Text>
+          </Pressable>
+        ))}
+
+        <Pressable onPress={() => router.back()}>
+          <Text style={styles.close}>Close</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  sheet: {
+    backgroundColor: "white",
+    padding: 20,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+  city: {
+    fontSize: 16,
+    paddingVertical: 8,
+  },
+  close: {
+    marginTop: 16,
+    color: "blue",
   },
 });

@@ -20,18 +20,24 @@ export default function SearchModal() {
   );
   const router = useRouter();
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      return;
+useEffect(() => {
+  if (!query.trim()) {
+    setResults([]);
+    return;
+  }
+
+  const timeout = setTimeout(async () => {
+    const cities = await searchCities(query);
+    setResults(cities);
+
+    if (cities.length === 1) {
+      setCurrentCity(cities[0]);
+      router.back();
     }
+  }, 400);
 
-    const timeout = setTimeout(() => {
-      searchCities(query).then(setResults);
-    }, 400);
-
-    return () => clearTimeout(timeout);
-  }, [query]);
+  return () => clearTimeout(timeout);
+}, [query]);
 
   function handleSelect(city: string) {
     setCurrentCity(city);
