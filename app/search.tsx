@@ -10,6 +10,7 @@ import {
 
 import { searchCities } from "@/api/weather";
 import { useWeatherStore } from "@/store/useWeatherStore";
+import i18n from "@/i18n";
 
 export default function SearchModal() {
   const [query, setQuery] = useState("");
@@ -47,7 +48,7 @@ useEffect(() => {
   return (
     <View style={styles.overlay}>
       <View style={styles.sheet}>
-        <Text style={styles.title}>Search city</Text>
+        <Text style={styles.title}>{i18n.t("searchCity")}</Text>
 
         <TextInput
           value={query}

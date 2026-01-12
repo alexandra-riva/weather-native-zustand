@@ -1,3 +1,10 @@
+/**
+ * DEPRECATED
+ * This file was used for manual fetch-based API calls.
+ * Weather data is now fetched using Redux Toolkit Query
+ * in redux/weatherApi.ts.
+ */
+
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 if (!API_KEY) {

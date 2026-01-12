@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { router } from "expo-router";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 import {
   ActivityIndicator,
   Button,
@@ -8,48 +8,58 @@ import {
   View,
 } from "react-native";
 
-import { fetchWeather } from "@/api/weather";
+import { useGetWeatherByCityQuery } from "@/redux/weatherApi";
 import { useWeatherStore } from "@/store/useWeatherStore";
+import i18n from "@/i18n";
 
 export default function HomeScreen() {
-  const router = useRouter();
+  // Drawer control (React Navigation)
+  const navigation = useNavigation();
 
+  // Zustand state
   const {
     currentCity,
     setCurrentCity,
-    refreshKey,
     toggleFavorite,
     favorites,
   } = useWeatherStore();
 
-  const [weather, setWeather] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  // RTK Query API fetching
+  const {
+    data: weather,
+    isLoading,
+    error,
+  } = useGetWeatherByCityQuery(currentCity!, {
+    skip: !currentCity,
+  });
 
-  useEffect(() => {
-    if (!currentCity) return;
-
-    setLoading(true);
-    fetchWeather(currentCity)
-      .then(setWeather)
-      .finally(() => setLoading(false));
-  }, [currentCity, refreshKey]); // 👈 IMPORTANT
-
+  // No city selected
   if (!currentCity) {
     return (
       <View style={styles.center}>
-        <Text>No city selected</Text>
+        <Text>{i18n.t("noCity")}</Text>
         <Button
-          title="Use Stockholm"
+          title={i18n.t("useStockholm")}
           onPress={() => setCurrentCity("Stockholm")}
         />
       </View>
     );
   }
 
-  if (loading) {
+  // Loading state
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
+      </View>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text>{i18n.t("failedToLoad")}</Text>
       </View>
     );
   }
@@ -65,18 +75,26 @@ export default function HomeScreen() {
       </Text>
 
       <Button
-        title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        title={
+          isFavorite
+            ? i18n.t("removeFavorite")
+            : i18n.t("addFavorite")
+        }
         onPress={() => toggleFavorite(currentCity)}
       />
 
-      {/* SEARCH MODAL */}
+      {/* Search modal (Expo Router) */}
       <Pressable onPress={() => router.push("/search")}>
-        <Text style={styles.link}>Search city</Text>
+        <Text style={styles.link}>{i18n.t("searchCity")}</Text>
       </Pressable>
 
-      {/* FAVORITES MODAL */}
-      <Pressable onPress={() => router.push("/modal")}>
-        <Text style={styles.link}>Open favorites</Text>
+      {/* Open favorites drawer (React Navigation) */}
+      <Pressable
+        onPress={() =>
+          navigation.dispatch(DrawerActions.openDrawer())
+        }
+      >
+        <Text style={styles.link}>{i18n.t("favorites")}</Text>
       </Pressable>
     </View>
   );

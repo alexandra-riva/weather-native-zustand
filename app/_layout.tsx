@@ -1,47 +1,29 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
 import { useColorScheme } from "@/hooks/use-color-scheme";
-
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider
-      value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false }}
-        />
+    <Provider store={store}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Drawer>
+          <Drawer.Screen
+            name="(tabs)"
+            options={{ title: "Weather" }}
+          />
+          <Drawer.Screen
+            name="favorites"
+            options={{ title: "Favorites" }}
+          />
+        </Drawer>
 
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal" }}
-        />
-
-        <Stack.Screen
-          name="search"
-          options={{
-            presentation: "modal",
-            animation: "slide_from_bottom",
-            headerShown: false,
-          }}
-        />
-      </Stack>
-
-      <StatusBar style="auto" />
-    </ThemeProvider>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </Provider>
   );
 }
