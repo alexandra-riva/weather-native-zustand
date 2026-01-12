@@ -12,15 +12,19 @@ export default function DrawerLayout() {
     >
       <Drawer.Screen
         name="(tabs)"
-        options={{ title: "Weather" }}
+        options={{ title: "Last Selected 🧭" }}
       />
       <Drawer.Screen
         name="favorites"
         options={{
-          title: "Favorites",
+          title: "Favorites ❤️",
           headerTransparent: false,
         }}
       />
+   <Drawer.Screen
+  name="mylocation"
+  options={{ title: "My Location 📍" }}
+/>
     </Drawer>
   );
 }

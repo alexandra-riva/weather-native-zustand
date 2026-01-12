@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "transparent", // ✅ THIS IS THE KEY
+    backgroundColor: "transparent", 
   },
   sheet: {
     backgroundColor: "white",

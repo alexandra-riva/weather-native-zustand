@@ -9,7 +9,7 @@ export default function FavoritesScreen() {
 
   function selectCity(city: string) {
     setCurrentCity(city);
-    router.replace("/"); // back to Home (tabs/index)
+    router.replace("/"); 
   }
 
   return (
