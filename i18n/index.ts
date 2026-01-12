@@ -11,6 +11,7 @@ const i18n = new I18n({
     removeFavorite: "Remove from favorites",
     failedToLoad: "Failed to load weather",
     localTime: "Local time",
+    myLocation: "My location",
 
     // Favorites
     favorites: "Favorites",
@@ -26,6 +27,7 @@ const i18n = new I18n({
     removeFavorite: "Ta bort favorit",
     failedToLoad: "Kunde inte hämta väder",
     localTime: "Lokal tid",
+    myLocation: "Min plats",
 
     // Favorites
     favorites: "Favoriter",

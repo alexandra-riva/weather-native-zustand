@@ -1,3 +1,5 @@
+// app/search.tsx
+
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -6,6 +8,9 @@ import {
   Text,
   TextInput,
   View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 import { searchCities } from "@/api/weather";
@@ -16,96 +21,104 @@ export default function SearchModal() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
 
-  const setCurrentCity = useWeatherStore(
-    (state) => state.setCurrentCity
-  );
+  const setCurrentCity = useWeatherStore((s) => s.setCurrentCity);
   const router = useRouter();
 
-useEffect(() => {
-  if (!query.trim()) {
-    setResults([]);
-    return;
-  }
-
-  const timeout = setTimeout(async () => {
-    const cities = await searchCities(query);
-    setResults(cities);
-
-    if (cities.length === 1) {
-      setCurrentCity(cities[0]);
-      router.back();
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
     }
-  }, 400);
 
-  return () => clearTimeout(timeout);
-}, [query]);
+    const timeout = setTimeout(async () => {
+      const cities = await searchCities(query);
 
-  function handleSelect(city: string) {
+      if (cities.length === 1) {
+        setCurrentCity(cities[0]);
+        router.back();
+        return;
+      }
+
+      setResults(cities);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  function selectCity(city: string) {
     setCurrentCity(city);
     router.back();
   }
 
   return (
     <View style={styles.overlay}>
-      <View style={styles.sheet}>
-        <Text style={styles.title}>{i18n.t("searchCity")}</Text>
+      {/* Tap outside to close */}
+      <Pressable style={StyleSheet.absoluteFill} onPress={() => router.back()} />
 
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Type a city name"
-          style={styles.input}
-        />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.sheet}>
+          <Text style={styles.title}>{i18n.t("searchCity")}</Text>
 
-        <FlatList
-          data={results}
-          keyExtractor={(item) => item}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => handleSelect(item)}
-              style={styles.item}
-            >
-              <Text style={styles.itemText}>{item}</Text>
-            </Pressable>
-          )}
-        />
-      </View>
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder={i18n.t("searchCity")}
+            style={styles.input}
+            autoFocus
+          />
+
+          <FlatList
+            data={results}
+            keyExtractor={(i) => i}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
+              <Pressable onPress={() => selectCity(item)} style={styles.item}>
+                <Text style={styles.itemText}>{item}</Text>
+              </Pressable>
+            )}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
-    justifyContent: "flex-end" as const,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "flex-end",
+    backgroundColor: "transparent",
   },
   sheet: {
     backgroundColor: "white",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     padding: 20,
-    maxHeight: "70%",
+    minHeight: "25%",
+    maxHeight: "100%",
   },
   title: {
     fontSize: 18,
-    marginBottom: 8,
-    fontWeight: "600" as const,
+    fontWeight: "600",
+    marginBottom: 12,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    borderColor: "#ddd",
+    borderRadius: 12,
     padding: 12,
     marginBottom: 12,
   },
   item: {
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
   itemText: {
     fontSize: 16,
   },
-};
+});
