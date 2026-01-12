@@ -1,5 +1,3 @@
-// app/search.tsx
-
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -52,8 +50,11 @@ export default function SearchModal() {
 
   return (
     <View style={styles.overlay}>
-      {/* Tap outside to close */}
-      <Pressable style={StyleSheet.absoluteFill} onPress={() => router.back()} />
+      {/* tap outside to close */}
+      <Pressable
+        style={StyleSheet.absoluteFill}
+        onPress={() => router.back()}
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -74,7 +75,10 @@ export default function SearchModal() {
             keyExtractor={(i) => i}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
-              <Pressable onPress={() => selectCity(item)} style={styles.item}>
+              <Pressable
+                onPress={() => selectCity(item)}
+                style={styles.item}
+              >
                 <Text style={styles.itemText}>{item}</Text>
               </Pressable>
             )}
@@ -87,21 +91,16 @@ export default function SearchModal() {
 
 const styles = StyleSheet.create({
   overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "transparent",
+    backgroundColor: "transparent", // ✅ THIS IS THE KEY
   },
   sheet: {
     backgroundColor: "white",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 20,
-    minHeight: "25%",
-    maxHeight: "100%",
+    minHeight: "30%",
   },
   title: {
     fontSize: 18,

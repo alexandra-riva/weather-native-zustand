@@ -33,9 +33,10 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-  },
+  flex: 1,
+  padding: 20,
+  backgroundColor: "transparent",
+},
   title: {
     fontSize: 20,
     fontWeight: "600",
