@@ -4,8 +4,12 @@ import { persist } from "zustand/middleware";
 type WeatherStore = {
   currentCity: string | null;
   favorites: string[];
-  setCurrentCity: (city: string) => void;
+
+  setCurrentCity: (city: string | null) => void;
   toggleFavorite: (city: string) => void;
+
+  // 👇 NEW
+  useMyLocation: () => void;
 };
 
 export const useWeatherStore = create<WeatherStore>()(
@@ -22,9 +26,13 @@ export const useWeatherStore = create<WeatherStore>()(
             ? state.favorites.filter((c) => c !== city)
             : [...state.favorites, city],
         })),
+
+      useMyLocation: () => {
+        set({ currentCity: null });
+      },
     }),
     {
-      name: "weather-storage", 
+      name: "weather-storage",
     }
   )
 );
