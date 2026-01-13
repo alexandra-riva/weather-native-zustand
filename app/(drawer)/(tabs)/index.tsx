@@ -26,7 +26,7 @@ export default function HomeScreen() {
 
   /* ------------------ AUTO LOCATION ON APP START ------------------ */
   useEffect(() => {
-    if (currentCity) return; // prevent re-running
+    if (currentCity) return; 
 
     (async () => {
       const { status } =

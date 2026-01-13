@@ -3,16 +3,14 @@ import { persist } from "zustand/middleware";
 
 type WeatherStore = {
   currentCity: string | null;
-  favorites: string[];
+  favorites: string[]; 
 
   setCurrentCity: (city: string | null) => void;
   toggleFavorite: (city: string) => void;
-
-  // 👇 NEW
   useMyLocation: () => void;
 };
 
-export const useWeatherStore = create<WeatherStore>()(
+export const useWeatherStore = create<WeatherStore>()( 
   persist(
     (set) => ({
       currentCity: null,

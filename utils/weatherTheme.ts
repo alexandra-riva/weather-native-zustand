@@ -17,7 +17,7 @@ export function getWeatherTheme(
 ): WeatherTheme {
   const c = condition.toLowerCase();
 
-  // 🌧️ Rain
+  // Rain
   if (c.includes("rain") || c.includes("drizzle") || c.includes("storm")) {
     return {
       emoji: "🌧️",
@@ -27,7 +27,7 @@ export function getWeatherTheme(
     };
   }
 
-  // ❄️ Snow
+  // Snow
   if (c.includes("snow") || c.includes("sleet")) {
     return {
       emoji: "❄️",
@@ -37,7 +37,7 @@ export function getWeatherTheme(
     };
   }
 
-  // ☀️ Clear / Sunny
+  // Clear / Sunny
   if (c.includes("sun") || c.includes("clear")) {
     // Cold sunny (e.g. -13)
     if (temp < 5) {
@@ -68,7 +68,7 @@ export function getWeatherTheme(
     };
   }
 
-  // ☁️ Cloudy (default)
+  // Cloudy (default)
   return {
     emoji: "☁️",
     gradient: isNight
