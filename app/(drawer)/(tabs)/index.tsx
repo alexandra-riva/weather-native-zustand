@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import * as Location from "expo-location";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Location from "expo-location";
+import { useEffect } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -9,10 +9,10 @@ import {
   View,
 } from "react-native";
 
+import i18n from "@/i18n";
 import { useGetWeatherByCityQuery } from "@/redux/weatherApi";
 import { useWeatherStore } from "@/store/useWeatherStore";
 import { getWeatherTheme } from "@/utils/weatherTheme";
-import i18n from "@/i18n";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
